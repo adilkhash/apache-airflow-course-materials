@@ -34,3 +34,9 @@ with DAG(dag_id='dag_with_two_tasks',
     )
 
     even_only >> dummy
+
+    # другие варианты написания кода
+
+    # dummy.set_upstream(even_only)
+    # even_only.set_downstream(dummy)
+    # dummy << even_only
