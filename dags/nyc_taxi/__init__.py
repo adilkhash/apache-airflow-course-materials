@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import pandas as pd
 from airflow.decorators import dag, task
 from airflow.operators.python import get_current_context
 from airflow.providers.http.operators.http import SimpleHttpOperator
@@ -30,7 +29,7 @@ def nyc_taxi_dataset_dag():
         return download_dataset(context['execution_date'].strftime('%Y-%m'))
 
     @task
-    def to_parquet(file_path):
+    def to_parquet(file_path: str):
         context = get_current_context()
         return convert_to_parquet(context['execution_date'].strftime('%Y-%m'), file_path)
 
