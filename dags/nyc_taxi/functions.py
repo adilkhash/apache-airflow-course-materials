@@ -1,3 +1,4 @@
+import gzip
 import datetime as dt
 from tempfile import NamedTemporaryFile
 
@@ -15,13 +16,13 @@ def download_dataset(year_month: str):
 
     s3 = S3Hook('minio_id')
 
-    s3_path = f's3://yellow-taxi-raw/yellow_tripdata_{year_month}.csv'
+    s3_path = f's3://yellow-taxi-raw/yellow_tripdata_{year_month}.csv.gz'
     bucket, key = s3.parse_s3_url(s3_path)
 
     with NamedTemporaryFile('w', encoding='utf-8', delete=False) as f:
         for chunk in response.iter_lines():
             f.write('{}\n'.format(chunk.decode('utf-8')))
-    s3.load_file(f.name, key, bucket, replace=True)
+    s3.load_file(f.name, key, bucket, replace=True, gzip=True)
 
     return s3_path
 
@@ -30,7 +31,9 @@ def convert_to_parquet(year_month: str, s3_path: str):
     s3 = S3Hook('minio_id')
     bucket, key = s3.parse_s3_url(s3_path)
     file_path = s3.download_file(key, bucket)
-    df = pd.read_csv(file_path)
+
+    with gzip.open(file_path, mode='rb') as f:
+        df = pd.read_csv(f)
 
     current_month = dt.datetime.strptime(year_month, '%Y-%m')
     next_month = current_month.replace(month=current_month.month + 1)
