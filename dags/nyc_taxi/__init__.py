@@ -19,7 +19,7 @@ def nyc_taxi_dataset_dag():
     check_file = SimpleHttpOperator(
         method='HEAD',
         endpoint='yellow_tripdata_{{ execution_date.strftime("%Y-%m") }}.csv',
-        task_id='check_if_file_exists',
+        task_id='check_file',
         http_conn_id='nyc_yellow_taxi_id'
     )
 

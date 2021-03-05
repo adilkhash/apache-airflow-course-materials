@@ -16,7 +16,7 @@ def download_dataset(year_month: str):
 
     s3 = S3Hook('minio_id')
 
-    s3_path = f's3://yellow-taxi-raw/yellow_tripdata_{year_month}.csv.gz'
+    s3_path = f's3://nyc-yellow-taxi-raw-data/yellow_tripdata_{year_month}.csv.gz'
     bucket, key = s3.parse_s3_url(s3_path)
 
     with NamedTemporaryFile('w', encoding='utf-8', delete=False) as f:
@@ -45,14 +45,16 @@ def convert_to_parquet(year_month: str, s3_path: str):
         ]
     df['pickup_date'] = df['tpep_pickup_datetime'].dt.strftime('%Y-%m-%d')
 
-    s3_path = f's3://yellow-taxi-parquet/yellow_tripdata_{year_month}.parquet'
+    s3_path = f's3://nyc-yellow-taxi-raw-data/yellow_tripdata_{year_month}.parquet'
+    bucket, key = s3.parse_s3_url(s3_path)
 
     with NamedTemporaryFile('wb', delete=False) as f:
         df.to_parquet(f)
 
     s3.load_file(
         f.name,
-        f'yellow_tripdata_{year_month}.parquet',
-        'yellow-taxi-parquet', replace=True
+        key,
+        bucket,
+        replace=True,
     )
     return s3_path
