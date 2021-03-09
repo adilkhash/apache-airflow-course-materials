@@ -23,7 +23,8 @@ def to_parquet(**context):
 with DAG(
         dag_id='nyc_taxi_pre_2',
         start_date=datetime(2020, 1, 1),
-        schedule_interval='@monthly'
+        schedule_interval='@monthly',
+        catchup=False,
 ) as dag:
     check_file_task = SimpleHttpOperator(
         task_id='check_file',

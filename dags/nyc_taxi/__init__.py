@@ -13,6 +13,7 @@ default_args = {
 @dag(default_args=default_args,
      schedule_interval='@monthly',
      start_date=datetime(2020, 1, 1),
+     catchup=False,
 )
 def nyc_taxi_dataset_dag():
 
