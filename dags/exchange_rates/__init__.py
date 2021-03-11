@@ -32,8 +32,8 @@ with DAG(
         postgres_conn_id='postgres_default',
         sql='sql/insert_rate.sql',
         params={
-            'base_currency': 'KZT',
-            'currency': 'USD',
+            'base_currency': 'USD',
+            'currency': 'KZT',
         }
     )
 

@@ -12,14 +12,14 @@ class CurrencyScoopOperator(BaseOperator):
     def __init__(
             self,
             base_currency: str,
-            symbol: str,
+            currency: str,
             conn_id: str = 'currency_scoop_conn_id',
             **kwargs) -> None:
         super().__init__(**kwargs)
         self.conn_id = conn_id
         self.base_currency = base_currency
-        self.symbol = symbol
+        self.currency = currency
 
     def execute(self, context: Any):
         api = CurrencyScoopHook(self.conn_id)
-        return api.get_rate(context['execution_date'].date(), self.base_currency, self.symbol)
+        return api.get_rate(context['execution_date'].date(), self.base_currency, self.currency)
