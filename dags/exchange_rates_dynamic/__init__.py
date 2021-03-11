@@ -33,7 +33,7 @@ with DAG(
         get_rate_task = CurrencyScoopOperator(
             task_id=f'get_rate_{ base }_{ currency }',
             base_currency=base,
-            symbol=currency,
+            currency=currency,
             conn_id='cur_scoop_conn_id',
             dag=dag,
             do_xcom_push=True,

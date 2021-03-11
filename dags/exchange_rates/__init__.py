@@ -21,7 +21,7 @@ with DAG(
     get_rate = CurrencyScoopOperator(
         task_id='get_rate',
         base_currency='USD',
-        symbol='KZT',
+        currency='KZT',
         conn_id='cur_scoop_conn_id',
         dag=dag,
         do_xcom_push=True,
