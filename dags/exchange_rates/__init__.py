@@ -1,15 +1,9 @@
 from datetime import datetime
 
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.providers.postgres.operators.postgres import PostgresOperator
 
 from .operator import CurrencyScoopOperator
-
-
-def print_func(**context):
-    ti = context['ti']
-    currency_rate = ti.xcom_pull(task_ids='get_rate')
-    print(currency_rate)
 
 
 with DAG(
@@ -18,7 +12,13 @@ with DAG(
         schedule_interval='@daily',
 ) as dag:
 
-    scoop = CurrencyScoopOperator(
+    create_table = PostgresOperator(
+        task_id='create_table_task',
+        sql='sql/create_table.sql',
+        postgres_conn_id='postgres_default',
+    )
+
+    get_rate = CurrencyScoopOperator(
         task_id='get_rate',
         base_currency='USD',
         symbol='KZT',
@@ -27,10 +27,14 @@ with DAG(
         do_xcom_push=True,
     )
 
-    print_operator = PythonOperator(
-        task_id='print_currency_rate',
-        python_callable=print_func,
-        dag=dag,
+    insert_rate = PostgresOperator(
+        task_id='insert_rate',
+        postgres_conn_id='postgres_default',
+        sql='sql/insert_rate.sql',
+        params={
+            'base_currency': 'KZT',
+            'currency': 'USD',
+        }
     )
 
-    scoop >> print_operator
+    create_table >> get_rate >> insert_rate
