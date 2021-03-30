@@ -24,7 +24,7 @@ with DAG(
         endpoint='yellow_tripdata_{{ execution_date.strftime("%Y-%m") }}.csv',
         http_conn_id='nyc_yellow_taxi_id',
         task_id='check_if_exists',
-        poke_interval=60 * 5,
+        poke_interval=60 * 60 * 24,  # every 24 hours
     )
 
     @task
