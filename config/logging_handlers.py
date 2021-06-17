@@ -8,10 +8,17 @@ class TelegramBotHandler(Handler):
         super().__init__()
         self.token = token
         self.chat_id = chat_id
+        self.context = None
 
     def emit(self, record: LogRecord):
         bot = telebot.TeleBot(self.token)
         bot.send_message(
             self.chat_id,
-            self.format(record)
+            f'DAG: {self.context.dag_id}\n'
+            f'Execution date: {self.context.execution_date}\n'
+            f'Task: {self.context.task_id}\n'
+            f'Error: {self.format(record)}'
         )
+
+    def set_context(self, context):
+        self.context = context
