@@ -5,16 +5,18 @@ volumes:
 
 x-airflow-common:
   &airflow-common
-  image: apache/airflow:2.0.1
+  image: apache/airflow:2.2.4
   environment:
     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
     - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://postgres:postgres@db:5432/airflow
     - AIRFLOW__CORE__FERNET_KEY=FB0o_zt4e3Ziq3LdUUO7F2Z95cvFFx16hU8jTeR1ASM=
     - AIRFLOW__CORE__LOAD_EXAMPLES=False
     - AIRFLOW__CORE__LOGGING_LEVEL=INFO
+    - AIRFLOW__CORE__HOME=/opt/airflow/
   volumes:
     - ./dags:/opt/airflow/dags
     - ./airflow-data/logs:/opt/airflow/logs
+    - ./config:/opt/airflow/config
     - ./airflow-data/plugins:/opt/airflow/plugins
     - ./airflow-data/airflow.cfg:/opt/airflow/airflow.cfg
 
