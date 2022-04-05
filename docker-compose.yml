@@ -5,7 +5,7 @@ volumes:
 
 x-airflow-common:
   &airflow-common
-  image: apache/airflow:2.2.4
+  image: apache/airflow:2.2.5
   environment:
     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
     - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://postgres:postgres@db:5432/airflow
